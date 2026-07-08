@@ -1,10 +1,13 @@
 name: Upload Website
-
+# This workflow is triggered on push to the master branch and deploys the website to an S3 bucket.
 on:
   push:
     branches:
       - master
-
+# This workflow has a single job called "deploy" that runs on the latest version of Ubuntu.
+# It checks out the repository, configures AWS credentials using secrets stored in GitHub,
+# and then deploys the website to an S3 bucket named "static-website-github-link"
+#by syncing the contents of the repository while excluding certain directories.
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,6 +26,10 @@ jobs:
       - name: Deploy Website to S3
         run: |
           aws s3 sync . s3://static-website-github-link \
-            --delete \
+            --delete \   
             --exclude ".git/*" \
             --exclude ".github/*"
+
+# delete: Deletes files in the S3 bucket that are not present in the local repository,
+# ensuring that the S3 bucket mirrors the repository's contents.
+# The "--exclude" options prevent certain directories from being uploaded to the S3 bucket.
